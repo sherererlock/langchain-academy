@@ -2,6 +2,9 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import MessagesState
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode, tools_condition
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Tool
 def multiply(a: int, b: int) -> int:
@@ -14,7 +17,12 @@ def multiply(a: int, b: int) -> int:
     return a * b
 
 # LLM with bound tool
-llm = ChatOpenAI(model="gpt-4o")
+llm = ChatOpenAI(
+    model="deepseek-v3", 
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+    api_key=os.getenv("DASHSCOPE_API_KEY"), 
+    temperature=0.0)
+
 llm_with_tools = llm.bind_tools([multiply])
 
 # Node

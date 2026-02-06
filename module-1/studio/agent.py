@@ -1,8 +1,10 @@
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
-
+import os
 from langgraph.graph import START, StateGraph, MessagesState
 from langgraph.prebuilt import tools_condition, ToolNode
+from dotenv import load_dotenv
+load_dotenv()
 
 def add(a: int, b: int) -> int:
     """Adds a and b.
@@ -34,7 +36,11 @@ def divide(a: int, b: int) -> float:
 tools = [add, multiply, divide]
 
 # Define LLM with bound tools
-llm = ChatOpenAI(model="gpt-4o")
+llm = ChatOpenAI(
+    model="deepseek-v3", 
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+    api_key=os.getenv("DASHSCOPE_API_KEY"), 
+    temperature=0.0)
 llm_with_tools = llm.bind_tools(tools)
 
 # System message
